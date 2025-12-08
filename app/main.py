@@ -65,18 +65,8 @@ def predict(item_name: str | None = None, days: int = 1, db: Session = Depends(g
         q = q.filter(models.FoodEntry.item_name == item_name)
     rows = q.order_by(models.FoodEntry.date).all()
 
-    if not rows:
-        raise HTTPException(status_code=404, detail="No data found for this item")
-
     if len(rows) < 10:
-        avg = sum([r.consumed_qty for r in rows]) / len(rows)
-        return {
-            "prediction": [
-                {"ds": (rows[-1].date + timedelta(days=i)), "yhat": round(avg, 2)}
-                for i in range(1, days + 1)
-            ],
-            "note": "Used average due to insufficient data"
-        }
+        raise HTTPException(status_code=400, detail="Need at least 10 data points")
 
     df = pd.DataFrame([{"ds": r.date, "y": r.consumed_qty} for r in rows])
     df = df.groupby("ds").sum().reset_index()
@@ -90,3 +80,12 @@ def predict(item_name: str | None = None, days: int = 1, db: Session = Depends(g
     for r in result:
         r["yhat"] = round(float(r["yhat"]), 2)
     return {"prediction": result}
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+def home():
+    return {"message": "Backend is running successfully!"}
+
+
