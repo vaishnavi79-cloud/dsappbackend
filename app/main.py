@@ -5,6 +5,7 @@ from app.database import SessionLocal, engine, Base
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 from prophet import Prophet
+from datetime import timedelta
 
 Base.metadata.create_all(bind=engine)
 
@@ -64,8 +65,18 @@ def predict(item_name: str | None = None, days: int = 1, db: Session = Depends(g
         q = q.filter(models.FoodEntry.item_name == item_name)
     rows = q.order_by(models.FoodEntry.date).all()
 
+    if not rows:
+        raise HTTPException(status_code=404, detail="No data found for this item")
+
     if len(rows) < 10:
-        raise HTTPException(status_code=400, detail="Need at least 10 data points")
+        avg = sum([r.consumed_qty for r in rows]) / len(rows)
+        return {
+            "prediction": [
+                {"ds": (rows[-1].date + timedelta(days=i)), "yhat": round(avg, 2)}
+                for i in range(1, days + 1)
+            ],
+            "note": "Used average due to insufficient data"
+        }
 
     df = pd.DataFrame([{"ds": r.date, "y": r.consumed_qty} for r in rows])
     df = df.groupby("ds").sum().reset_index()
