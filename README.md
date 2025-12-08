@@ -10,6 +10,6 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 
 ## Testing
-GET http://localhost:8000/history
-GET http://localhost:8000/wastage-summary
-GET http://localhost:8000/predict?item_name=Rice
+GET https://dsappbackend.onrender.com/history
+GET https://dsappbackend.onrender.com/wastage-summary
+GET https://dsappbackend.onrender.com/predict
