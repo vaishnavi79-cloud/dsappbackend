@@ -14,7 +14,6 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_methods=["*"],
-    allow_credentials=True,
     allow_headers=["*"],
 )
 
@@ -80,11 +79,3 @@ def predict(item_name: str | None = None, days: int = 1, db: Session = Depends(g
     for r in result:
         r["yhat"] = round(float(r["yhat"]), 2)
     return {"prediction": result}
-from fastapi import FastAPI
-
-app = FastAPI()
-
-@app.get("/")
-def home():
-    return {"message": "Backend is running successfully!"}
-
