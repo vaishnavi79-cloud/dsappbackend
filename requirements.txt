@@ -6,5 +6,3 @@ sqlalchemy
 pydantic
 python-multipart
 aiofiles
-psycopg2-binary
-sqlalchemy
