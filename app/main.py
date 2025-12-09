@@ -5,9 +5,6 @@ from app.database import SessionLocal, engine, Base
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 from prophet import Prophet
-from datetime import timedelta
-
-
 
 Base.metadata.create_all(bind=engine)
 
@@ -17,6 +14,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_methods=["*"],
+    allow_credentials=True,
     allow_headers=["*"],
 )
 
@@ -89,5 +87,4 @@ app = FastAPI()
 @app.get("/")
 def home():
     return {"message": "Backend is running successfully!"}
-
 
