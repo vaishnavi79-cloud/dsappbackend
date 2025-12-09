@@ -6,6 +6,9 @@ from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 from prophet import Prophet
 from datetime import timedelta
+from .database import Base, engine
+Base.metadata.create_all(bind=engine)
+
 
 Base.metadata.create_all(bind=engine)
 
