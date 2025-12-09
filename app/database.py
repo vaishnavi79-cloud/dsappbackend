@@ -5,7 +5,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 # read DATABASE_URL from env, fallback to sqlite for local dev if not present
-DATABASE_URL = os.getenv("postgresql://canteen_user:secretpw@localhost:5432/canteen_db", "sqlite:///./canteen.db")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./canteen.db")
 
 # If using Heroku-style DATABASE_URL with postgres, SQLAlchemy needs no change.
 # But if using windows and psycopg2, ensure 'postgresql+psycopg2://' scheme is used.
